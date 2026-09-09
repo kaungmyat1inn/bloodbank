@@ -9,7 +9,7 @@ import '../utils/launch.dart';
 /// https://github.com/<user>/<repo>/releases/latest/download/app-release.apk
 /// which always points at the newest release automatically).
 const String kApkDownloadUrl =
-    'https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO/releases/latest/download/app-release.apk';
+    'https://github.com/kaungmyat1inn/bloodbank/releases/latest/download/app-release.apk';
 
 class ApkDownloadScreen extends StatelessWidget {
   const ApkDownloadScreen({super.key});

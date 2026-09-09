@@ -1,8 +1,8 @@
 name: Build Android APK
 
-# Builds the Android app on every push to main and on every tag, then
-# publishes app-release.apk as a GitHub Release asset. Because each release
-# is published as the newest one, GitHub's stable alias
+# Builds the Android app on every push to main (and on manual dispatch), then
+# publishes app-release.apk as a GitHub Release asset. Because each release is
+# published as the newest one, GitHub's stable alias
 #   https://github.com/<owner>/<repo>/releases/latest/download/app-release.apk
 # always points at the freshest build — this is the URL used by the
 # "Android App Download" button inside the web app
@@ -19,6 +19,10 @@ on:
 permissions:
   contents: write
 
+env:
+  # Keep this in sync with vercel.json and your local `flutter --version`.
+  FLUTTER_VERSION: "3.47.2"
+
 jobs:
   build-apk:
     runs-on: ubuntu-latest
@@ -33,16 +37,24 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - run: flutter pub get
+
+      # Fail fast on analysis / test errors before the slow APK build.
+      - run: flutter analyze
+      - run: flutter test
 
       # Non-destructively generates android/ (and web/) folders matching the
-      # exact Flutter SDK version this runner just installed, since those
-      # platform folders aren't committed to the repo (see .gitignore).
+      # exact Flutter SDK version this runner installed, since those platform
+      # folders aren't committed to the repo (see .gitignore).
       - name: Bootstrap platform folders
         run: flutter create --platforms=android,web .
 
       # A fresh `flutter create` release build has no internet permission by
-      # default (only the debug-only manifest gets it automatically), but
-      # this app talks to Firebase over the network, so add it explicitly.
+      # default (only the debug-only manifest gets it automatically), but this
+      # app talks to Firebase over the network, so add it explicitly.
       - name: Ensure INTERNET permission in the release manifest
         run: |
           MANIFEST=android/app/src/main/AndroidManifest.xml
@@ -50,8 +62,6 @@ jobs:
             sed -i 's#<manifest xmlns:android="http://schemas.android.com/apk/res/android">#<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.INTERNET"/>#' "$MANIFEST"
           fi
           grep -n 'INTERNET' "$MANIFEST"
-
-      - run: flutter pub get
 
       - run: flutter build apk --release
 

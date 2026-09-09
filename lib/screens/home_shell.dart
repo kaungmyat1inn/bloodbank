@@ -32,15 +32,19 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
 
+  // Order here is the nav order. Index 0 is the default screen shown on login.
   List<_NavItem> get _items => [
-        _NavItem('ပင်မစာမျက်နှာ', Icons.home_outlined, (_) => const DashboardScreen()),
-        _NavItem('အသစ်စာရင်းသွင်းမည်', Icons.person_add_alt_1_outlined,
-            (_) => const DonorRegisterScreen()),
-        _NavItem('သွေးလှူရှင်ပရိုဖိုင်', Icons.people_outline, (_) => const DonorListScreen()),
-        _NavItem('သွေးလှူနိုင်သောစာရင်း', Icons.event_available_outlined,
+        _NavItem('သွေးရှာမည်', Icons.search, (_) => const DonorSearchScreen()),
+        _NavItem('လှူရန်အသင့်ရှိသူများ', Icons.event_available_outlined,
             (_) => const EligibleDonorsScreen()),
-        _NavItem('သွေးလှူမှတ်တမ်း', Icons.history, (_) => const DonationHistoryScreen()),
-        _NavItem('အလှူရှင်ရှာရန်', Icons.search, (_) => const DonorSearchScreen()),
+        _NavItem('အလှူရှင်အသစ်စာရင်းသွင်းရန်', Icons.person_add_alt_1_outlined,
+            (_) => const DonorRegisterScreen()),
+        _NavItem('အလှူရှင်များစာရင်း', Icons.people_outline,
+            (_) => const DonorListScreen()),
+        _NavItem('သွေးလှူမှတ်တမ်း', Icons.history,
+            (_) => const DonationHistoryScreen()),
+        _NavItem('အချက်အလက်များ', Icons.insights_outlined,
+            (_) => const DashboardScreen()),
       ];
 
   @override

@@ -28,19 +28,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    appId: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    messagingSenderId: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    projectId: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    authDomain: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    storageBucket: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
+    apiKey: 'AIzaSyAuvgFDkCLP-1326B1uTLjTi3jQ6XkYUN8',
+    appId: '1:88120463965:web:04ffe061619c49210a73b4',
+    messagingSenderId: '88120463965',
+    projectId: 'blood-bank-app-50253',
+    authDomain: 'blood-bank-app-50253.firebaseapp.com',
+    storageBucket: 'blood-bank-app-50253.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    appId: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    messagingSenderId: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    projectId: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
-    storageBucket: 'REPLACE_WITH_FLUTTERFIRE_CONFIGURE',
+    apiKey: 'AIzaSyB0PrRmfh_F9H5dZyQ-hfLsDWM7ui42d0w',
+    appId: '1:88120463965:android:c650a265174642140a73b4',
+    messagingSenderId: '88120463965',
+    projectId: 'blood-bank-app-50253',
+    storageBucket: 'blood-bank-app-50253.firebasestorage.app',
   );
 }

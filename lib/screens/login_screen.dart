@@ -42,6 +42,20 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _googleLogin() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      await context.read<AuthService>().signInWithGoogle();
+    } catch (e) {
+      if (mounted) setState(() => _error = AuthService.friendlyError(e));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
   Future<void> _forgotPassword() async {
     final controller = TextEditingController(text: _emailCtrl.text.trim());
     final email = await showDialog<String>(
@@ -172,6 +186,27 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         : const Text('လော့ဂ်အင်ဝင်မည်'),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      const Expanded(child: Divider()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text('သို့မဟုတ်',
+                            style: TextStyle(color: Colors.grey.shade600)),
+                      ),
+                      const Expanded(child: Divider()),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: _loading ? null : _googleLogin,
+                    icon: const Icon(Icons.g_mobiledata, size: 28),
+                    label: const Text('Google ဖြင့် ဝင်မည်'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   TextButton(

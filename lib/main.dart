@@ -52,7 +52,7 @@ class BloodBankApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'သွေးလှူဒါန်းရေးအသင်း',
+        title: 'သွေးလှူဒါန်းရေး',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         locale: const Locale('my'),

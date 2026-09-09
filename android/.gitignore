@@ -1,0 +1,13 @@
+# gradle-wrapper.jar / gradlew ARE committed here: android/ is tracked and CI
+# no longer runs `flutter create`, so the wrapper must be in the repo.
+/.gradle
+/captures/
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks

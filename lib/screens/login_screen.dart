@@ -126,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Icon(Icons.bloodtype, size: 64, color: Color(0xFFC62828)),
                   const SizedBox(height: 12),
                   const Text(
-                    'သွေးလှူဒါန်းရေးအသင်း',
+                    'သွေးလှူဒါန်းရေး',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),

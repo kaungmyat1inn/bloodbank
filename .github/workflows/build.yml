@@ -46,23 +46,8 @@ jobs:
       - run: flutter analyze
       - run: flutter test
 
-      # Non-destructively generates android/ (and web/) folders matching the
-      # exact Flutter SDK version this runner installed, since those platform
-      # folders aren't committed to the repo (see .gitignore).
-      - name: Bootstrap platform folders
-        run: flutter create --platforms=android,web .
-
-      # A fresh `flutter create` release build has no internet permission by
-      # default (only the debug-only manifest gets it automatically), but this
-      # app talks to Firebase over the network, so add it explicitly.
-      - name: Ensure INTERNET permission in the release manifest
-        run: |
-          MANIFEST=android/app/src/main/AndroidManifest.xml
-          if ! grep -q 'android.permission.INTERNET' "$MANIFEST"; then
-            sed -i 's#<manifest xmlns:android="http://schemas.android.com/apk/res/android">#<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.INTERNET"/>#' "$MANIFEST"
-          fi
-          grep -n 'INTERNET' "$MANIFEST"
-
+      # android/ is committed (app name, launcher icon, INTERNET permission,
+      # url_launcher <queries>), so no `flutter create` step here.
       - run: flutter build apk --release
 
       - name: Publish release with APK

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Vercel web build: Vercel has no Flutter toolchain, so fetch a pinned SDK,
-# generate the web/ platform folder (it is gitignored), and build.
+# Vercel web build: Vercel has no Flutter toolchain, so fetch a pinned SDK
+# and build. The web/ folder is committed (custom title, icons, manifest),
+# so do NOT run `flutter create` here — it would overwrite those.
 # Referenced from vercel.json -> buildCommand.
 set -euo pipefail
 
@@ -12,6 +13,5 @@ fi
 export PATH="$PATH:$(pwd)/_flutter_sdk/bin"
 
 flutter config --enable-web --no-analytics
-flutter create --platforms=web .
 flutter pub get
 flutter build web --release

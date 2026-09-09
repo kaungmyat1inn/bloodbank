@@ -8,16 +8,25 @@ build/
 .pub/
 pubspec.lock
 
-# Platform folders are generated locally via:
-#   flutter create --platforms=android,web .
-# They are intentionally NOT committed from this template so that they always
-# match the Flutter SDK version each developer / CI runner uses.
-/android/
+# android/ and web/ ARE committed — they hold the app name ("Thway"), the
+# launcher icon / favicon, the browser <title>, the INTERNET permission and
+# the url_launcher <queries>. Regenerating them with `flutter create` would
+# wipe those, so CI/Vercel must NOT run `flutter create` for these platforms.
+# The unused desktop / iOS folders stay generated-on-demand.
 /ios/
-/web/
 /linux/
 /macos/
 /windows/
+
+# Android build noise (the rest of android/ is tracked)
+/android/.gradle/
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+/android/local.properties
+/android/key.properties
+/android/**/GeneratedPluginRegistrant.java
+/android/.kotlin/
 
 # Note: lib/firebase_options.dart is intentionally NOT ignored. Firebase's
 # web/Android client config values are not secret (Google's own guidance) —

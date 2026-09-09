@@ -53,7 +53,7 @@ class _HomeShellState extends State<HomeShell> {
     final items = _items;
     final bankName = context.watch<User?>()?.displayName?.trim();
     final title = (bankName == null || bankName.isEmpty)
-        ? 'သွေးလှူဒါန်းရေးအသင်း'
+        ? 'သွေးလှူဒါန်းရေး'
         : bankName;
     final body = IndexedStack(
       index: _index,

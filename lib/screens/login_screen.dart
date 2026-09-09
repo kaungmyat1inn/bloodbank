@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
+import 'apk_download_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -218,6 +219,16 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                     child: const Text('အကောင့်မရှိသေးဘူးလား — အကောင့်အသစ် ဖွင့်မည်'),
+                  ),
+                  const Divider(height: 24),
+                  TextButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const ApkDownloadScreen(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.android, color: Color(0xFF3DDC84)),
+                    label: const Text('Android App (APK) ဒေါင်းလုတ်ဆွဲရန်'),
                   ),
                 ],
               ),

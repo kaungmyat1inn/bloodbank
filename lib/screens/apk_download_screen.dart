@@ -1,33 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/apk_download.dart';
 import '../utils/launch.dart';
 
-/// Update this constant after you create your first GitHub Release — see
-/// the README for exactly how the CI workflow publishes the APK and what
-/// URL to put here (typically:
-/// https://github.com/<user>/<repo>/releases/latest/download/app-release.apk
-/// which always points at the newest release automatically).
+/// Points at the newest GitHub Release asset — `releases/latest/download/...`
+/// always resolves to the most recent published release, so a new build only
+/// needs a new release, not a code change here.
 const String kApkDownloadUrl =
     'https://github.com/kaungmyat1inn/bloodbank/releases/latest/download/app-release.apk';
 
 class ApkDownloadScreen extends StatelessWidget {
   const ApkDownloadScreen({super.key});
 
-  bool get _isConfigured => !kApkDownloadUrl.contains('YOUR_GITHUB_USERNAME');
-
   Future<void> _download(BuildContext context) async {
-    if (!_isConfigured) {
-      ScaffoldMessenger.of(context).showSnackBar(
+    final messenger = ScaffoldMessenger.of(context);
+    // On web this synthesises an <a> click (reliable file download). It
+    // returns false on non-web, where we fall back to url_launcher.
+    final handled = await triggerBrowserDownload(
+      kApkDownloadUrl,
+      filename: 'app-release.apk',
+    );
+    if (handled) {
+      messenger.showSnackBar(
         const SnackBar(
           content: Text(
-            'APK link မသတ်မှတ်ရသေးပါ — lib/screens/apk_download_screen.dart ထဲ '
-            'kApkDownloadUrl ကို သင့် GitHub repo နဲ့ ပြောင်းပါ',
+            'ဒေါင်းလုတ် စတင်ပါပြီ။ browser က .apk ကို "dangerous" ဟု သတ်မှတ်လျှင် '
+            'download bar တွင် "Keep" / "ဆက်လက်ဒေါင်းလုတ်" ကို နှိပ်ပါ။',
           ),
+          duration: Duration(seconds: 6),
         ),
       );
       return;
     }
+    if (!context.mounted) return;
     await launchOrNotify(
       context,
       Uri.parse(kApkDownloadUrl),
@@ -36,15 +43,23 @@ class ApkDownloadScreen extends StatelessWidget {
     );
   }
 
+  Future<void> _copyLink(BuildContext context) async {
+    await Clipboard.setData(const ClipboardData(text: kApkDownloadUrl));
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Link ကူးယူပြီးပါပြီ — browser tab အသစ်တွင် paste လုပ်ပါ')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Android App Download')),
       body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 420),
-          child: Padding(
-            padding: const EdgeInsets.all(24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 440),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -57,7 +72,7 @@ class ApkDownloadScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Android ဖုန်းများတွင် app ကို တိုက်ရိုက်ထည့်သွင်းအသုံးပြုနိုင်ရန် APK file ကို ဒေါင်းလုတ်ဆွဲပါ။',
+                  'Android ဖုန်းများတွင် app ကို တိုက်ရိုက်ထည့်သွင်းအသုံးပြုနိုင်ရန် APK file (~55 MB) ကို ဒေါင်းလုတ်ဆွဲပါ။',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey.shade600),
                 ),
@@ -67,9 +82,43 @@ class ApkDownloadScreen extends StatelessWidget {
                   icon: const Icon(Icons.download),
                   label: const Text('APK ဒေါင်းလုတ်ဆွဲမည်'),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () => _copyLink(context),
+                  icon: const Icon(Icons.link, size: 18),
+                  label: const Text('ဒေါင်းလုတ် link ကူးယူမည်'),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade50,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.amber.shade200),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'ဒေါင်းလုတ် မပြီးဘူးဆိုရင် —',
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        '• Chrome/Edge က .apk ကို အန္တရာယ်ရှိနိုင်သည်ဟု ယူဆ၍ ခဏ တားထားတတ်သည်။ '
+                        'ဘရောက်ဇာအောက်ခြေ download bar (သို့) Downloads (Ctrl+J) တွင် '
+                        '"Keep" / "Keep anyway" ကို နှိပ်ပါ။\n'
+                        '• ဖုန်း Chrome တွင် "Download anyway" ကို နှိပ်ပါ။\n'
+                        '• မရသေးလျှင် အပေါ်က link ကို ကူးယူပြီး tab အသစ်တွင် ဖွင့်ပါ။',
+                        style: TextStyle(color: Colors.grey.shade800, fontSize: 12, height: 1.5),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
                 Text(
-                  'Note: install မလုပ်ခင် ဖုန်းထဲက "Unknown sources" ခွင့်ပြုချက် ဖွင့်ပေးထားရပါမည်။',
+                  'Install မလုပ်ခင် ဖုန်း Settings တွင် "Unknown sources / အမည်မသိ အရင်းအမြစ်" '
+                  'ကို ခွင့်ပြုထားရပါမည်။',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey.shade500, fontSize: 12),
                 ),

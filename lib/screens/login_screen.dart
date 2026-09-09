@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,6 +42,58 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _forgotPassword() async {
+    final controller = TextEditingController(text: _emailCtrl.text.trim());
+    final email = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('စကားဝှက် ပြန်လည်သတ်မှတ်ရန်'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'သင့်အီးမေးလ်သို့ reset link တစ်ခု ပို့ပေးပါမည်။',
+              style: TextStyle(fontSize: 13),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.emailAddress,
+              autofocus: true,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+                prefixIcon: Icon(Icons.email_outlined),
+              ),
+              onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('မလုပ်တော့ပါ'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+            child: const Text('Link ပို့မည်'),
+          ),
+        ],
+      ),
+    );
+    if (email == null || email.isEmpty || !mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      await context.read<AuthService>().sendPasswordReset(email);
+      messenger.showSnackBar(
+        SnackBar(content: Text('$email သို့ reset link ပို့ပြီးပါပြီ — အီးမေးလ် စစ်ပါ')),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(AuthService.friendlyError(e))),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextFormField(
                     controller: _emailCtrl,
                     keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
                     decoration: const InputDecoration(
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email_outlined),
@@ -94,11 +148,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         (v == null || v.isEmpty) ? 'Password ထည့်ပါ' : null,
                     onFieldSubmitted: (_) => _login(),
                   ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _loading ? null : _forgotPassword,
+                      child: const Text('စကားဝှက် မေ့နေပါသလား?'),
+                    ),
+                  ),
                   if (_error != null) ...[
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     Text(_error!, style: const TextStyle(color: Colors.red)),
                   ],
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loading ? null : _login,
                     child: _loading
@@ -111,6 +172,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         : const Text('လော့ဂ်အင်ဝင်မည်'),
+                  ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: _loading
+                        ? null
+                        : () => Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => const RegisterScreen(),
+                              ),
+                            ),
+                    child: const Text('အကောင့်မရှိသေးဘူးလား — အကောင့်အသစ် ဖွင့်မည်'),
                   ),
                 ],
               ),

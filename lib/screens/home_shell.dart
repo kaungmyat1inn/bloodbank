@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +47,10 @@ class _HomeShellState extends State<HomeShell> {
   Widget build(BuildContext context) {
     final desktop = isDesktop(context);
     final items = _items;
+    final bankName = context.watch<User?>()?.displayName?.trim();
+    final title = (bankName == null || bankName.isEmpty)
+        ? 'သွေးလှူဒါန်းရေးအသင်း'
+        : bankName;
     final body = IndexedStack(
       index: _index,
       children: [for (final item in items) Builder(builder: item.builder)],
@@ -137,15 +142,18 @@ class _HomeShellState extends State<HomeShell> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(20),
+              Padding(
+                padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
-                    Icon(Icons.bloodtype, color: Color(0xFFC62828), size: 28),
-                    SizedBox(width: 10),
-                    Text(
-                      'သွေးလှူဒါန်းရေးအသင်း',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    const Icon(Icons.bloodtype, color: Color(0xFFC62828), size: 28),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),

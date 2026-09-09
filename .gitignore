@@ -1,0 +1,39 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+pubspec.lock
+
+# Platform folders are generated locally via:
+#   flutter create --platforms=android,web .
+# They are intentionally NOT committed from this template so that they always
+# match the Flutter SDK version each developer / CI runner uses.
+/android/
+/ios/
+/web/
+/linux/
+/macos/
+/windows/
+
+# Note: lib/firebase_options.dart is intentionally NOT ignored. Firebase's
+# web/Android client config values are not secret (Google's own guidance) —
+# real protection comes from Firestore Security Rules (see firestore.rules)
+# and, optionally, restricting the API key to your domains in Google Cloud
+# Console. Committing it is what lets GitHub Actions / Vercel build the app
+# without any extra secret setup.
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
